@@ -1,10 +1,14 @@
 const db = require('../../data/dbConfig')
 
+const getById = id => {
+    return db('tasks').where('task_id', id).first()
+}
 // [POST] /api/tasks
 // {"task_id":1,"task_description":"baz",
 //"task_notes":null,"task_completed":false,"project_id:1}
-const create = async () => {
-
+const create = async task => {
+    const [task_id] = await db('tasks').insert(task)
+    return getById(task_id)
 }
 
 // [GET] /api/tasks
