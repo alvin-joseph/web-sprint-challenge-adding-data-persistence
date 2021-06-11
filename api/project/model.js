@@ -1,20 +1,24 @@
 const db = require('../../data/dbConfig')
 
-const getById = id => {
-    return db('projects').where('project_id', id).first()
+const getById = async id => {
+    const projectAdded = await db('projects').where('project_id', id)
+
+    const transformAdded = projectAdded.map(row => {
+        if (row.project_completed === 0) {
+            return { ...row, project_completed: false }
+        } else {
+            return { ...row, project_completed: true }
+        }
+    })
+
+    return transformAdded[0]
 }
-//{"project_id":1,"project_name":"bar","project_description":null,
-//"project_completed":false}
-//[POST] /api/projects
+
 const create = async project => {
     const [project_id] = await db('projects').insert(project)
-    
     return getById(project_id)
 }
 
-// [GET] /api/projects
-// [{"project_id":1,"project_name":"bar","project_description":null,
-// "project_completed":false}]
 const get = async () => {
     const projectRows = await db('projects as p')
 

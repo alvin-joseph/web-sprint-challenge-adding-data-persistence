@@ -1,10 +1,12 @@
 const router = require('express').Router()
 const Resource = require('./model')
 
-const { checkResourcePayload } = require('./middleware')
+const { 
+  checkResourcePayload, 
+  checkResourceUnique } = require('./middleware')
 
 //[POST] /api/resources
-router.post('/', checkResourcePayload, (req, res, next) => {
+router.post('/', checkResourcePayload, checkResourceUnique, (req, res, next) => {
     Resource.create(req.body)
       .then(resource => {
         res.status(201).json(resource)
